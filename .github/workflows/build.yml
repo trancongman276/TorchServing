@@ -30,4 +30,4 @@ jobs:
         with:
           push: true
           context: .
-          tags: hieupth/cudabook:latest
+          tags: doku9652/torchserving:cu111
