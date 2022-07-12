@@ -103,7 +103,7 @@ RUN chmod +x /usr/local/bin/dockerd-entrypoint.sh \
     && chown -R model-server /home/model-server
 
 COPY config.properties /home/model-server/config.properties
-COPY atr.mar .
+RUN pip install gdown && gdown 1-39t8w8f5_8yceoYy3IWuxdvcWzUfNM_
 
 RUN mkdir /home/model-server/model-store && \
     mv atr.mar /home/model-server/model-store/atr.mar && \
