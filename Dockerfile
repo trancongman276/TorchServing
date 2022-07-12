@@ -24,7 +24,9 @@ ARG BASE_IMAGE=ubuntu:18.04
 ENV PYTHONUNBUFFERED TRUE
 
 RUN --mount=type=cache,id=apt-dev,target=/var/cache/apt \
-    apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub \
+    apt-get install wget && \
+    wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-keyring_1.0-1_all.deb \
+    dpkg -i cuda-keyring_1.0-1_all.deb \
     #apt --fix-broken -y install && \
     apt-get update && \
     apt remove python-pip  python3-pip && \
@@ -81,7 +83,9 @@ FROM ${BASE_IMAGE} AS runtime-image
 ENV PYTHONUNBUFFERED TRUE
 
 RUN --mount=type=cache,target=/var/cache/apt \
-    apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub \
+    apt-get install wget && \
+    wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-keyring_1.0-1_all.deb \
+    dpkg -i cuda-keyring_1.0-1_all.deb \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
     python3.8 \
