@@ -109,15 +109,16 @@ COPY --chown=model-server --from=compile-image /home/venv /home/venv
 ENV PATH="/home/venv/bin:$PATH"
 
 COPY dockerd-entrypoint.sh /usr/local/bin/dockerd-entrypoint.sh
+COPY ./important/* .
 
 RUN chmod +x /usr/local/bin/dockerd-entrypoint.sh \
     && chown -R model-server /home/model-server
 
-COPY config.properties /home/model-server/config.properties
-RUN pip install gdown nvgpu && gdown 1-39t8w8f5_8yceoYy3IWuxdvcWzUfNM_
+RUN pip install gdown nvgpu grpcio protobuf grpcio-tools \
+    && gdown 1oHQZ3qX_ZopgstOiqrfPTVX35I5GMw9d
 
 RUN mkdir /home/model-server/model-store && \
-    mv atr.mar /home/model-server/model-store/atr.mar && \
+    mv schp-atr.mar /home/model-server/model-store/schp-atr.mar && \
     chown -R model-server /home/model-server/model-store
 
 EXPOSE 8080 8081 8082 7070 7071
@@ -125,5 +126,11 @@ EXPOSE 8080 8081 8082 7070 7071
 USER model-server
 WORKDIR /home/model-server
 ENV TEMP=/home/model-server/tmp
-ENTRYPOINT ["/usr/local/bin/dockerd-entrypoint.sh"]
-CMD ["serve"]
+
+ENTRYPOINT [ "tail -f /dev/null" ]
+# ENTRYPOINT torchserve --start && \
+#            python -m grpc_tools.protoc --proto_path=./proto/ \ 
+#            --python_out=ts_scripts --grpc_python_out=ts_scripts \ 
+#            ./proto/inference.proto ./proto/management.proto
+# ENTRYPOINT ["/usr/local/bin/dockerd-entrypoint.sh"]
+# CMD ["serve"]
